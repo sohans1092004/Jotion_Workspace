@@ -1,9 +1,7 @@
-# Fullstack Notion Clone: Next.js 13, React, Convex, Tailwind 
+# Jotion : A Collaborative Workspace
 
-<!-- ![Copy of Copy of Copy of Fullstack Twitter Clone (6)](https://github.com/AntonioErdeljac/notion-clone-tutorial/assets/23248726/66bcfca3-93bf-4aa4-950d-f98c020e1156)
- -->
 
-This is a repository for Fullstack Notion Clone: Next.js 13, React, Convex, Tailwind 
+This is a repository for Jotion - A collaborative workspace : Next.js 13, React, Convex, Tailwind 
 
 
 Key Features:
