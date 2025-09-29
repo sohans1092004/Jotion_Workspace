@@ -3,6 +3,14 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 
+async function getMemberRole(ctx: any, documentId: Id<"documents">, userId: string) {
+  const membership = await ctx.db
+    .query("documentMembers")
+    .withIndex("by_user_document", (q: any) => q.eq("userId", userId).eq("documentId", documentId))
+    .unique();
+  return membership?.role as ("viewer" | "editor" | undefined);
+}
+
 export const archive = mutation({
   args: { id: v.id("documents") },
   handler: async (ctx, args) => {
@@ -20,6 +28,7 @@ export const archive = mutation({
       throw new Error("Not found");
     }
 
+    // Owner-only destructive action
     if (existingDocument.userId !== userId) {
       throw new Error("Unauthorized");
     }
@@ -150,7 +159,10 @@ export const restore = mutation({
     }
 
     if (existingDocument.userId !== userId) {
-      throw new Error("Unauthorized");
+      // Allow edits by any authenticated user when document is published and not archived
+      if (!existingDocument.isPublished || existingDocument.isArchived) {
+        throw new Error("Unauthorized");
+      }
     }
 
     const recursiveRestore = async (documentId: Id<"documents">) => {
@@ -208,6 +220,7 @@ export const remove = mutation({
       throw new Error("Not found");
     }
 
+    // Owner-only delete
     if (existingDocument.userId !== userId) {
       throw new Error("Unauthorized");
     }
@@ -252,10 +265,6 @@ export const getById = query({
       throw new Error("Not found");
     }
 
-    if (document.isPublished && !document.isArchived) {
-      return document;
-    }
-
     if (!identity) {
       throw new Error("Not authenticated");
     }
@@ -263,7 +272,10 @@ export const getById = query({
     const userId = identity.subject;
 
     if (document.userId !== userId) {
-      throw new Error("Unauthorized");
+      const role = await getMemberRole(ctx, document._id, userId);
+      if (!role) {
+        throw new Error("Unauthorized");
+      }
     }
 
     return document;
@@ -297,7 +309,13 @@ export const update = mutation({
     }
 
     if (existingDocument.userId !== userId) {
-      throw new Error("Unauthorized");
+      if (existingDocument.isArchived) {
+        throw new Error("Unauthorized");
+      }
+      const role = await getMemberRole(ctx, existingDocument._id, userId);
+      if (role !== "editor") {
+        throw new Error("Unauthorized");
+      }
     }
 
     const document = await ctx.db.patch(args.id, {

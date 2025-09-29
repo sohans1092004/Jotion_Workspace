@@ -1,7 +1,7 @@
 export default {
     providers: [
       {
-        domain: "https://awake-ox-31.clerk.accounts.dev",
+        domain: "https://evolving-ibex-38.clerk.accounts.dev",
         applicationID: "convex",
       }
     ]

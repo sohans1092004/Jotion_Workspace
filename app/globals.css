@@ -7,6 +7,13 @@ html,
 body,
 :root {
   height: 100%;
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html {
+  min-width: 100vw;
 }
 @layer base {
   :root {
@@ -78,5 +85,7 @@ body,
   }
   body {
     @apply bg-background text-foreground;
+    font-size: 16px;
+    min-width: 100vw;
   }
 }
