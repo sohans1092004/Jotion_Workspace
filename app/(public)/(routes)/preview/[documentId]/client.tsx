@@ -40,7 +40,7 @@ export default function Client({ documentId }: ClientProps) {
   }
 
   if (document === null) {
-    return <div className="px-6 py-8">Not found or you don't have access.</div>;
+    return <div className="px-6 py-8">Not found or you don&apos;t have access.</div>;
   }
 
   return (

@@ -23,9 +23,6 @@ interface ShareButtonProps {
 export function ShareButton({ documentId, ownerId, disabled }: ShareButtonProps) {
   const { userId } = useAuth();
   const { user } = useUser();
-  const isOwner = userId === ownerId;
-  // Non-owners cannot manage access; don't render the button
-  if (!isOwner) return null;
   const [open, setOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
   const [role, setRole] = useState<"viewer" | "editor">("viewer");
@@ -36,6 +33,10 @@ export function ShareButton({ documentId, ownerId, disabled }: ShareButtonProps)
   const updateRole = useMutation(api.memberships.updateMemberRole);
   const removeMember = useMutation(api.memberships.removeMember);
   const getUserIdByEmail = useAction(api.users.getUserIdByEmail);
+
+  const isOwner = userId === ownerId;
+  // Non-owners cannot manage access; don't render the button
+  if (!isOwner) return null;
 
   const onInvite = async () => {
     if (!inviteEmail) return;
