@@ -7,9 +7,10 @@ import { LiveCursors } from "./live-cursors";
 
 interface PresenceWithCursorsProps {
   children: React.ReactNode;
+  ownerId: string;
 }
 
-export function PresenceWithCursors({ children }: PresenceWithCursorsProps) {
+export function PresenceWithCursors({ children, ownerId }: PresenceWithCursorsProps) {
   const [, updateMyPresence] = useMyPresence();
 
   useEffect(() => {
@@ -37,7 +38,7 @@ export function PresenceWithCursors({ children }: PresenceWithCursorsProps) {
     <>
       {/* Avatars - Fixed position */}
       <div className="fixed top-4 right-4 z-50">
-        <PresenceAvatars />
+        <PresenceAvatars ownerId={ownerId} />
       </div>
 
       {/* Cursors overlay */}
