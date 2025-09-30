@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
 import { useCreateBlockNote } from "@blocknote/react";
@@ -48,17 +48,34 @@ const Editor = ({
   }: {
     DynamicBlockNoteView: any;
   }) => {
+    const onChangeRef = useRef(onChange);
+    const [isReady, setIsReady] = useState(false);
+    
+    // Update ref when onChange changes
+    useEffect(() => {
+      onChangeRef.current = onChange;
+    }, [onChange]);
+
     const liveEditor = useCreateBlockNoteWithLiveblocks({
       initialContent: parsedInitial,
       uploadFile: handleUpload,
     });
 
+    // Wait for editor to be fully ready
     useEffect(() => {
       if (!liveEditor) return;
+      const timer = setTimeout(() => setIsReady(true), 100);
+      return () => clearTimeout(timer);
+    }, [liveEditor]);
+
+    useEffect(() => {
+      if (!liveEditor || !isReady) return;
       return liveEditor.onChange(() => {
-        onChange(JSON.stringify((liveEditor as any).topLevelBlocks, null, 2));
+        onChangeRef.current(JSON.stringify((liveEditor as any).topLevelBlocks, null, 2));
       });
-    }, [liveEditor, onChange]);
+    }, [liveEditor, isReady]);
+
+    if (!liveEditor || !isReady) return null;
 
     return (
       <DynamicBlockNoteView
@@ -100,10 +117,6 @@ const Editor = ({
     return () => clearTimeout(t);
   }, [mounted]);
 
-  // Remount on theme change to keep styles consistent without touching internals
-  const [mountKey, setMountKey] = useState(0);
-  useEffect(() => setMountKey((k) => k + 1), [resolvedTheme]);
-
   // Dynamically import BlockNoteView to avoid early Tiptap access during SSR/initialization
   const DynamicBlockNoteView = useMemo(
     () =>
@@ -118,9 +131,9 @@ const Editor = ({
   return (
     <div>
       {editable ? (
-        <EditableEditor DynamicBlockNoteView={DynamicBlockNoteView} key={`bn-${resolvedTheme}-${mountKey}-e`} />
+        <EditableEditor DynamicBlockNoteView={DynamicBlockNoteView} />
       ) : (
-        <ReadonlyEditor DynamicBlockNoteView={DynamicBlockNoteView} key={`bn-${resolvedTheme}-${mountKey}-r`} />
+        <ReadonlyEditor DynamicBlockNoteView={DynamicBlockNoteView} />
       )}
     </div>
   );

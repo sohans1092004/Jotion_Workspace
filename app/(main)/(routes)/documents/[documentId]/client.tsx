@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import dynamic from "next/dynamic";
+import { useCallback, useEffect, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
@@ -11,6 +10,7 @@ import { Cover } from "@/components/cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Room } from "@/app/room";
 import { api as apiAll } from "@/convex/_generated/api";
+import Editor from "@/components/editor";
 
 interface ClientProps {
   documentId: Id<"documents">;
@@ -19,11 +19,6 @@ interface ClientProps {
 export default function Client({ documentId }: ClientProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-
-  const Editor = useMemo(
-    () => dynamic(() => import("@/components/editor"), { ssr: false }),
-    []
-  );
 
   const document = useQuery(api.documents.getById, { documentId });
   const role = useQuery(apiAll.memberships.myRole, { documentId });
