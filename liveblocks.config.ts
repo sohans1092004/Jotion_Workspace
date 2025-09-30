@@ -4,8 +4,14 @@ declare global {
   interface Liveblocks {
     // Each user's Presence, for useMyPresence, useOthers, etc.
     Presence: {
-      // Example, real-time cursor coordinates
-      // cursor: { x: number; y: number };
+      cursor: { x: number; y: number } | null;
+      isEditing: boolean;
+      userInfo?: {
+        name: string;
+        email: string;
+        avatar: string;
+        userId: string;
+      };
     };
 
     // The Storage tree for the room, for useMutation, useStorage, etc.
@@ -18,9 +24,10 @@ declare global {
     UserMeta: {
       id: string;
       info: {
-        // Example properties, for useSelf, useUser, useOthers, etc.
-        // name: string;
-        // avatar: string;
+        name: string;
+        email: string;
+        avatar: string;
+        color: string;
       };
     };
 

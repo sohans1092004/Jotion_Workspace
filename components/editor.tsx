@@ -58,7 +58,7 @@ const Editor = ({
       return liveEditor.onChange(() => {
         onChange(JSON.stringify((liveEditor as any).topLevelBlocks, null, 2));
       });
-    }, [liveEditor]);
+    }, [liveEditor, onChange]);
 
     return (
       <DynamicBlockNoteView

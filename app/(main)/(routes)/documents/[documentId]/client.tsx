@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { useMutation, useQuery } from "convex/react";
 
@@ -29,11 +29,11 @@ export default function Client({ documentId }: ClientProps) {
   const role = useQuery(apiAll.memberships.myRole, { documentId });
   const update = useMutation(api.documents.update);
 
-  const onChange = (content: string) => {
+  const onChange = useCallback((content: string) => {
     // Only editor or owner can update; during loading (role === undefined), do not update
     if (role !== "editor" && role !== "owner") return;
     update({ id: documentId, content });
-  };
+  }, [role, update, documentId]);
 
   if (!mounted || document === undefined) {
     return (

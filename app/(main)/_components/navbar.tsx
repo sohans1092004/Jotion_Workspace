@@ -12,6 +12,8 @@ import { Banner } from "./banner";
 import { Menu } from "./menu";
 import { Publish } from "./publish";
 import { ShareButton } from "@/components/share-button";
+import { PresenceRoom } from "@/components/presence-room";
+import { PresenceAvatars } from "@/components/presence-avatars";
 
 interface NavbarProps {
   isCollapsed: boolean;
@@ -56,6 +58,10 @@ export const Navbar = ({
         <div className="flex items-center justify-between w-full">
           <Title initialData={document} />
           <div className="flex items-center gap-x-2">
+            {/* Presence Avatars */}
+            <PresenceRoom documentId={document._id} ownerId={document.userId}>
+              <PresenceAvatars ownerId={document.userId} />
+            </PresenceRoom>
             <ShareButton documentId={document._id} ownerId={document.userId} />
             <Publish initialData={document} />
             <Menu documentId={document._id} />

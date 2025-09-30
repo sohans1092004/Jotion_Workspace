@@ -1,6 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Import Liveblocks styles */
+@import "@liveblocks/react-ui/styles.css";
  
 
 html,

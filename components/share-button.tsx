@@ -28,13 +28,18 @@ export function ShareButton({ documentId, ownerId, disabled }: ShareButtonProps)
   const [role, setRole] = useState<"viewer" | "editor">("viewer");
   const [error, setError] = useState<string | null>(null);
 
-  const members = useQuery(api.memberships.listMembers, { documentId });
+  const isOwner = userId === ownerId;
+  
+  // Only fetch members if user is owner
+  const members = useQuery(
+    api.memberships.listMembers, 
+    isOwner ? { documentId } : "skip"
+  );
   const addMember = useMutation(api.memberships.addMember);
   const updateRole = useMutation(api.memberships.updateMemberRole);
   const removeMember = useMutation(api.memberships.removeMember);
   const getUserIdByEmail = useAction(api.users.getUserIdByEmail);
 
-  const isOwner = userId === ownerId;
   // Non-owners cannot manage access; don't render the button
   if (!isOwner) return null;
 
