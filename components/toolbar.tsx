@@ -14,7 +14,6 @@ import { IconPicker } from "./icon-picker";
 
 // ✅ Import ShareButton
 import { ShareButton } from "@/components/share-button";
-import { PresenceAvatars } from "@/components/presence-avatars";
 
 interface ToolbarProps {
   initialData: Doc<"documents">;

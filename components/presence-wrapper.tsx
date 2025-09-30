@@ -3,11 +3,15 @@
 import { useEffect, useState } from "react";
 import { PresenceAvatars } from "./presence-avatars";
 
+interface PresenceWrapperProps {
+  ownerId: string;
+}
+
 /**
  * Wrapper that delays rendering of presence components
  * to avoid conflicts with editor initialization
  */
-export function PresenceWrapper() {
+export function PresenceWrapper({ ownerId }: PresenceWrapperProps) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -23,7 +27,7 @@ export function PresenceWrapper() {
 
   return (
     <div className="fixed top-4 right-4 z-50">
-      <PresenceAvatars />
+      <PresenceAvatars ownerId={ownerId} />
     </div>
   );
 }
